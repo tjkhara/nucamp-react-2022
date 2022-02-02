@@ -1,6 +1,110 @@
 import React from "react"
-import { Breadcrumb, BreadcrumbItem, Card, CardImg, CardText, CardBody, CardTitle } from "reactstrap"
+import {
+  Button,
+  Breadcrumb,
+  BreadcrumbItem,
+  Card,
+  CardImg,
+  CardText,
+  CardBody,
+  CardTitle,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Label
+} from "reactstrap"
 import { Link } from "react-router-dom"
+import { Control, LocalForm, Errors } from "react-redux-form"
+
+class CommentForm extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isModalOpen: false,
+      rating: "",
+      author: "",
+      text: "",
+      touched: {
+        rating: false,
+        author: false,
+        text: false
+      }
+    }
+
+    this.toggleModal = this.toggleModal.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  toggleModal() {
+    this.setState({
+      isModalOpen: !this.state.isModalOpen
+    })
+  }
+
+  handleSubmit(values) {
+    console.log("Current state is: " + JSON.stringify(values))
+    alert("Current state is: " + JSON.stringify(values))
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+          <ModalHeader toggle={this.toggleModal}>Login</ModalHeader>
+          <ModalBody>
+            <LocalForm onSubmit={values => this.handleSubmit(values)}>
+              <div className="form-group">
+                <Label htmlFor="rating" md={2}>
+                  Rating
+                </Label>
+
+                <Control.select model=".rating" id="rating" name="rating" className="form-control">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </Control.select>
+              </div>
+
+              <div className="form-group">
+                <Label htmlFor="author" md={2}>
+                  Author
+                </Label>
+                <Control.text
+                  model=".author"
+                  id="author"
+                  name="author"
+                  placeholder="Last Name"
+                  className="form-control"
+                />
+              </div>
+
+              <div className="form-group">
+                <Label htmlFor="text" md={2}>
+                  Text
+                </Label>
+                <Control.text
+                  model=".text"
+                  id="text"
+                  name="text"
+                  placeholder="Text"
+                  className="form-control"
+                />
+              </div>
+              <Button type="submit" color="primary" outline>
+                <i className="fa fa-pencil fa-lg" /> Submit comment
+              </Button>
+            </LocalForm>
+          </ModalBody>
+        </Modal>
+        <Button type="submit" color="primary" outline onClick={this.toggleModal}>
+          <i className="fa fa-pencil fa-lg" /> Submit comment
+        </Button>
+      </React.Fragment>
+    )
+  }
+}
 
 function RenderCampsite({ campsite }) {
   return (
@@ -25,11 +129,17 @@ function RenderComments({ comments }) {
             <div key={comment.id}>
               <p>{comment.text}</p>
               <p>
-                {comment.author} {new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "2-digit" }).format(new Date(Date.parse(comment.date)))}
+                {comment.author}{" "}
+                {new Intl.DateTimeFormat("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "2-digit"
+                }).format(new Date(Date.parse(comment.date)))}
               </p>
             </div>
           )
         })}
+        <CommentForm />
       </div>
     )
   } else {
