@@ -16,6 +16,12 @@ import {
 import { Link } from "react-router-dom"
 import { Control, LocalForm, Errors } from "react-redux-form"
 
+const required = val => val && val.length
+const maxLength = len => val => !val || val.length <= len
+const minLength = len => val => val && val.length >= len
+const isNumber = val => !isNaN(+val)
+const validEmail = val => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val)
+
 class CommentForm extends React.Component {
   constructor(props) {
     super(props)
@@ -69,14 +75,28 @@ class CommentForm extends React.Component {
 
               <div className="form-group">
                 <Label htmlFor="author" md={2}>
-                  Author
+                  Your Name
                 </Label>
                 <Control.text
                   model=".author"
                   id="author"
                   name="author"
-                  placeholder="Last Name"
+                  placeholder="Your Name"
                   className="form-control"
+                  validators={{
+                    minLength: minLength(2),
+                    maxLength: maxLength(15)
+                  }}
+                />
+                <Errors
+                  className="text-danger"
+                  model=".author"
+                  show="touched"
+                  component="div"
+                  messages={{
+                    minLength: "Must be at least 2 characters",
+                    maxLength: "Must be 15 characters or less"
+                  }}
                 />
               </div>
 
