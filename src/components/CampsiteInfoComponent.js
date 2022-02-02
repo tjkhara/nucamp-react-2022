@@ -31,7 +31,7 @@ class CommentForm extends React.Component {
       author: "",
       text: "",
       touched: {
-        rating: false,
+        rating: true,
         author: false,
         text: false
       }
