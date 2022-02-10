@@ -191,3 +191,37 @@ export const addPartners = partners => ({
   type: ActionTypes.ADD_PARTNERS,
   payload: partners
 })
+
+// Task 2
+
+export const postFeedback = feedback => dispatch => {
+  // Debugging
+  console.log("Hello")
+  console.log("Feedback: ", feedback)
+  console.log("Dispatch: ", dispatch)
+  return fetch(baseUrl + "feedback", {
+    method: "post",
+    body: JSON.stringify(feedback)
+  })
+    .then(
+      response => {
+        if (response.ok) {
+          console.log("response one ", response)
+          return response
+        } else {
+          const error = new Error(`Error ${response.status}: ${response.statusText}`)
+          error.response = response
+          throw error
+        }
+      },
+      error => {
+        const errMess = new Error(error.message)
+        throw errMess
+      }
+    )
+    .then(response => {
+      console.log("response two", response.json())
+      return response.json()
+    })
+    .catch(error => dispatch(partnersFailed(error.message)))
+}
