@@ -1,12 +1,42 @@
 import React from "react"
 import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Media } from "reactstrap"
 import { Link } from "react-router-dom"
+import { baseUrl } from "../shared/baseUrl"
+import { Loading } from "./LoadingComponent"
+
+const PartnerList = props => {
+  const partners = props.partners.partners.map(partner => {
+    return (
+      <Media tag="li" key={partner.id}>
+        <RenderPartner partner={partner} />
+      </Media>
+    )
+  })
+
+  if (props.partners.isLoading) {
+    return <Loading />
+  }
+
+  if (props.partners.errMess) {
+    return (
+      <div className="col">
+        <h4>{props.partners.errMess}</h4>
+      </div>
+    )
+  }
+
+  return (
+    <div className="col mt-4">
+      <Media list>{partners}</Media>
+    </div>
+  )
+}
 
 const RenderPartner = ({ partner }) => {
   if (partner) {
     return (
       <React.Fragment>
-        <Media object src={partner.image} alt={partner.name} width="150" />
+        <Media object src={baseUrl + partner.image} alt={partner.name} width="150" />
         <Media body className="ml-5 mb-4">
           <Media heading>{partner.name}</Media>
           {partner.description}
@@ -19,14 +49,6 @@ const RenderPartner = ({ partner }) => {
 }
 
 function About(props) {
-  const partners = props.partners.map(partner => {
-    return (
-      <Media tag="li" key={partner.id}>
-        <RenderPartner partner={partner} />
-      </Media>
-    )
-  })
-
   return (
     <div className="container">
       <div className="row">
@@ -45,8 +67,12 @@ function About(props) {
         <div className="col-sm-6">
           <h3>Our Mission</h3>
           <p>
-            We present a curated database of the best campsites in the vast woods and backcountry of the World Wide Web Wilderness. We increase access to adventure for the public while promoting safe and respectful use of resources. The expert wilderness trekkers on our staff personally verify each
-            campsite to make sure that they are up to our standards. We also present a platform for campers to share reviews on campsites they have visited with each other.
+            We present a curated database of the best campsites in the vast woods and backcountry of
+            the World Wide Web Wilderness. We increase access to adventure for the public while
+            promoting safe and respectful use of resources. The expert wilderness trekkers on our
+            staff personally verify each campsite to make sure that they are up to our standards. We
+            also present a platform for campers to share reviews on campsites they have visited with
+            each other.
           </p>
         </div>
         <div className="col-sm-6">
@@ -72,9 +98,15 @@ function About(props) {
           <Card className="bg-light mt-3">
             <CardBody>
               <blockquote className="blockquote">
-                <p className="mb-0">I will not follow where the path may lead, but I will go where there is no path, and I will leave a trail.</p>
+                <p className="mb-0">
+                  I will not follow where the path may lead, but I will go where there is no path,
+                  and I will leave a trail.
+                </p>
                 <footer className="blockquote-footer">
-                  Muriel Strode, <cite title="Source Title">"Wind-Wafted Wild Flowers" - The Open Court, 1903</cite>
+                  Muriel Strode,{" "}
+                  <cite title="Source Title">
+                    "Wind-Wafted Wild Flowers" - The Open Court, 1903
+                  </cite>
                 </footer>
               </blockquote>
             </CardBody>
@@ -86,7 +118,7 @@ function About(props) {
           <h3>Community Partners</h3>
         </div>
         <div className="col mt-4">
-          <Media list>{partners}</Media>
+          <PartnerList partners={props.partners} />
         </div>
       </div>
     </div>
