@@ -194,19 +194,17 @@ export const addPartners = partners => ({
 
 // Task 2
 
-export const postFeedback = feedback => dispatch => {
-  // Debugging
-  console.log("Hello")
-  console.log("Feedback: ", feedback)
-  console.log("Dispatch: ", dispatch)
+export const postFeedback = feedback => () => {
   return fetch(baseUrl + "feedback", {
-    method: "post",
-    body: JSON.stringify(feedback)
+    method: "POST",
+    body: JSON.stringify(feedback),
+    headers: {
+      "Content-Type": "application/json"
+    }
   })
     .then(
       response => {
         if (response.ok) {
-          console.log("response one ", response)
           return response
         } else {
           const error = new Error(`Error ${response.status}: ${response.statusText}`)
@@ -215,13 +213,13 @@ export const postFeedback = feedback => dispatch => {
         }
       },
       error => {
-        const errMess = new Error(error.message)
-        throw errMess
+        throw error
       }
     )
-    .then(response => {
-      console.log("response two", response.json())
-      return response.json()
+    .then(response => response.json())
+    .then(response => alert("Thank you for your feedback\n" + JSON.stringify(response)))
+    .catch(error => {
+      console.log("post comment", error.message)
+      alert("Your comment could not be posted\nError: " + error.message)
     })
-    .catch(error => dispatch(partnersFailed(error.message)))
 }
